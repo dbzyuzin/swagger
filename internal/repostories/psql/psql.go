@@ -1,4 +1,4 @@
-package memory
+package psql
 
 import "github.com/dbzyuzin/swagger/internal/models"
 

@@ -2,14 +2,16 @@ package memory
 
 import "github.com/dbzyuzin/swagger/internal/models"
 
-var users []models.User
-
-func AddUser(name models.User) {
-	users = append(users, name)
+type Repository struct {
+	users []models.User
 }
 
-func FindUser(name string) bool {
-	for _, u := range users {
+func (r *Repository) AddUser(name models.User) {
+	r.users = append(r.users, name)
+}
+
+func (r *Repository) FindUser(name string) bool {
+	for _, u := range r.users {
 		if u.Name == name {
 			return true
 		}

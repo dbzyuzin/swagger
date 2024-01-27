@@ -2,10 +2,15 @@ package rest
 
 import (
 	"github.com/dbzyuzin/swagger/internal/config"
+	"github.com/dbzyuzin/swagger/internal/services"
 	"github.com/gin-gonic/gin"
 )
 
-func NewServer() *gin.Engine {
+type Rest struct {
+	service services.Service
+}
+
+func NewServer(service services.Service) *gin.Engine {
 	if config.DebugMode {
 		gin.SetMode(gin.DebugMode)
 	} else {
@@ -14,8 +19,10 @@ func NewServer() *gin.Engine {
 
 	r := gin.Default()
 
-	r.POST("/users", createUser)
-	r.GET("/users/:name/exists", userExists)
+	rest := Rest{service}
+
+	r.POST("/users", rest.createUser)
+	r.GET("/users/:name/exists", rest.userExists)
 
 	return r
 }
