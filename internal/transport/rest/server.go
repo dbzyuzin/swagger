@@ -1,11 +1,16 @@
 package rest
 
 import (
+	"github.com/dbzyuzin/swagger/internal/config"
 	"github.com/gin-gonic/gin"
 )
 
 func NewServer() *gin.Engine {
-	gin.SetMode(gin.ReleaseMode)
+	if config.DebugMode {
+		gin.SetMode(gin.DebugMode)
+	} else {
+		gin.SetMode(gin.ReleaseMode)
+	}
 
 	r := gin.Default()
 
