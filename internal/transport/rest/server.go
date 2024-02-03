@@ -11,6 +11,7 @@ import (
 )
 
 type Rest struct {
+	lg      *zap.SugaredLogger
 	service services.Service
 }
 
@@ -24,7 +25,7 @@ func NewServer(lg *zap.SugaredLogger, cfg config.ServerConfig, service services.
 	gin.DefaultWriter = io.Discard
 	r := gin.Default()
 
-	rest := Rest{service}
+	rest := Rest{lg, service}
 
 	r.Use(func(ctx *gin.Context) {
 		lg.Info("http request", ctx.Request.URL.Path)

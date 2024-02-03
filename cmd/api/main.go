@@ -17,7 +17,11 @@ import (
 )
 
 func main() {
-	logger, _ := zap.NewDevelopment()
+	logCfg := zap.NewDevelopmentConfig()
+	logCfg.OutputPaths = []string{"server.log"}
+	logCfg.Encoding = "json"
+
+	logger, _ := logCfg.Build()
 	defer logger.Sync()
 	lg := logger.Sugar()
 

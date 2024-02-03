@@ -11,6 +11,7 @@ func (s *Rest) createUser(ctx *gin.Context) {
 	var user models.User
 	err := ctx.BindJSON(&user)
 	if err != nil {
+		s.lg.Error("Invalid body")
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}

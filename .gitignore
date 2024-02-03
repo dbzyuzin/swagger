@@ -21,3 +21,5 @@
 go.work
 
 server-exe
+
+*.log
