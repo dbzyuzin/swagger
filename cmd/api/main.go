@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/dbzyuzin/swagger/internal/config"
 	"github.com/dbzyuzin/swagger/internal/repostories/memory"
 	"github.com/dbzyuzin/swagger/internal/services"
 	"github.com/dbzyuzin/swagger/internal/transport/rest"
@@ -19,7 +20,7 @@ func main() {
 	repo := &memory.Repository{}
 	service := services.New(repo)
 
-	server := rest.NewServer(":8080", service)
+	server := rest.NewServer(config.ServerHost, service)
 
 	go func() {
 		quit := make(chan os.Signal, 1)
