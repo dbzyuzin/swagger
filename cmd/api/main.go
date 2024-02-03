@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"errors"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -14,18 +13,23 @@ import (
 	"github.com/dbzyuzin/swagger/internal/repostories/memory"
 	"github.com/dbzyuzin/swagger/internal/services"
 	"github.com/dbzyuzin/swagger/internal/transport/rest"
+	"go.uber.org/zap"
 )
 
 func main() {
+	logger, _ := zap.NewDevelopment()
+	defer logger.Sync()
+	lg := logger.Sugar()
+
 	cfg, err := config.Read()
 	if err != nil {
-		log.Fatal(err)
+		lg.Fatal(err)
 	}
 
 	repo := &memory.Repository{}
 	service := services.New(repo)
 
-	server := rest.NewServer(cfg.Server, service)
+	server := rest.NewServer(lg, cfg.Server, service)
 
 	go func() {
 		quit := make(chan os.Signal, 1)
@@ -34,11 +38,11 @@ func main() {
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 		defer cancel()
 		if err := server.Shutdown(ctx); err != nil {
-			log.Panicln("Shutdown error:", err)
+			lg.Panicln("Shutdown error:", err)
 		}
 	}()
 
 	if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-		log.Panic(err)
+		lg.Panicln(err)
 	}
 }
