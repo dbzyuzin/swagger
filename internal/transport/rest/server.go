@@ -1,6 +1,8 @@
 package rest
 
 import (
+	"net/http"
+
 	"github.com/dbzyuzin/swagger/internal/config"
 	"github.com/dbzyuzin/swagger/internal/services"
 	"github.com/gin-gonic/gin"
@@ -10,7 +12,7 @@ type Rest struct {
 	service services.Service
 }
 
-func NewServer(service services.Service) *gin.Engine {
+func NewServer(host string, service services.Service) *http.Server {
 	if config.DebugMode {
 		gin.SetMode(gin.DebugMode)
 	} else {
@@ -24,5 +26,8 @@ func NewServer(service services.Service) *gin.Engine {
 	r.POST("/users", rest.createUser)
 	r.GET("/users/:name/exists", rest.userExists)
 
-	return r
+	return &http.Server{
+		Addr:    host,
+		Handler: r,
+	}
 }
