@@ -17,10 +17,12 @@ import (
 )
 
 func main() {
+	cfg := config.Read()
+
 	repo := &memory.Repository{}
 	service := services.New(repo)
 
-	server := rest.NewServer(config.ServerHost, service)
+	server := rest.NewServer(cfg.Server, service)
 
 	go func() {
 		quit := make(chan os.Signal, 1)

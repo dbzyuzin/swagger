@@ -1,18 +1,27 @@
 package config
 
-import "os"
+import (
+	"log"
 
-var DebugMode bool = false
-var ServerHost string = ":8080"
+	"github.com/caarlos0/env"
+)
 
-func init() {
-	debug := os.Getenv("DEBUG")
-	if debug == "true" {
-		DebugMode = true
+type Config struct {
+	Server ServerConfig
+}
+
+type ServerConfig struct {
+	DebugMode  bool   `env:"DEBUG"`
+	ServerHost string `env:"SERVER_HOST" envDefault:":8080"`
+}
+
+func Read() Config {
+	cfg := ServerConfig{}
+	if err := env.Parse(&cfg); err != nil {
+		log.Fatal(err)
 	}
 
-	serverHost := os.Getenv("SERVER_HOST")
-	if serverHost != "" {
-		ServerHost = serverHost
+	return Config{
+		Server: cfg,
 	}
 }

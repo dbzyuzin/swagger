@@ -12,8 +12,8 @@ type Rest struct {
 	service services.Service
 }
 
-func NewServer(host string, service services.Service) *http.Server {
-	if config.DebugMode {
+func NewServer(cfg config.ServerConfig, service services.Service) *http.Server {
+	if cfg.DebugMode {
 		gin.SetMode(gin.DebugMode)
 	} else {
 		gin.SetMode(gin.ReleaseMode)
@@ -27,7 +27,7 @@ func NewServer(host string, service services.Service) *http.Server {
 	r.GET("/users/:name/exists", rest.userExists)
 
 	return &http.Server{
-		Addr:    host,
+		Addr:    cfg.ServerHost,
 		Handler: r,
 	}
 }
