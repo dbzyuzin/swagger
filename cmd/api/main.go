@@ -17,7 +17,10 @@ import (
 )
 
 func main() {
-	cfg := config.Read()
+	cfg, err := config.ReadFile("config.toml")
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	repo := &memory.Repository{}
 	service := services.New(repo)
