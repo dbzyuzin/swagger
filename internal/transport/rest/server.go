@@ -6,6 +6,7 @@ import (
 
 	"github.com/dbzyuzin/swagger/internal/config"
 	"github.com/dbzyuzin/swagger/internal/services"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -27,6 +28,10 @@ func NewServer(lg *zap.SugaredLogger, cfg config.ServerConfig, service services.
 
 	rest := Rest{lg, service}
 
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"*"}
+
+	r.Use(cors.New(config))
 	r.Use(func(ctx *gin.Context) {
 		lg.Info("http request", ctx.Request.URL.Path)
 	})
