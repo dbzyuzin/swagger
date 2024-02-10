@@ -30,6 +30,7 @@ func NewServer(lg *zap.SugaredLogger, cfg config.ServerConfig, service services.
 
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{"*"}
+	config.AllowHeaders = []string{"*"}
 
 	r.Use(cors.New(config))
 	r.Use(func(ctx *gin.Context) {

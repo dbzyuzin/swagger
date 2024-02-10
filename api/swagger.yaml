@@ -16,9 +16,11 @@ paths:
         - in: path
           name: name
           schema:
-            type: integer
+            type: string
           required: true
           description: user name to find
+      security:
+        - ApiKeyAuth: []
       summary: Проверка что пользователь существует
       operationId: userExists
       responses:
@@ -32,6 +34,11 @@ paths:
           description: Not found
           content: {}
 components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
   schemas:
     Status:
       type: object
