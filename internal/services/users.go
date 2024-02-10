@@ -2,13 +2,15 @@ package services
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/dbzyuzin/swagger/internal/models"
+	"github.com/dbzyuzin/swagger/internal/pkg/tracing"
 )
 
 type UsersRepository interface {
 	AddUser(models.User)
-	FindUser(string) bool
+	FindUser(context.Context, string) bool
 }
 
 type Service struct {
@@ -28,6 +30,7 @@ func (s *Service) CreateNewUser(ctx context.Context, user models.User) error {
 }
 
 func (s *Service) UserExists(ctx context.Context, name string) (bool, error) {
-	ok := s.repo.FindUser(name)
+	fmt.Println("from service", tracing.Get(ctx))
+	ok := s.repo.FindUser(ctx, name)
 	return ok, nil
 }

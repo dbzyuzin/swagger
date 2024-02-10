@@ -1,9 +1,12 @@
 package rest
 
 import (
+	"math/rand"
 	"net/http"
+	"strconv"
 
 	"github.com/dbzyuzin/swagger/internal/models"
+	"github.com/dbzyuzin/swagger/internal/pkg/tracing"
 	"github.com/gin-gonic/gin"
 )
 
@@ -23,7 +26,9 @@ func (s *Rest) createUser(ctx *gin.Context) {
 }
 
 func (s *Rest) userExists(ctx *gin.Context) {
-	ok, err := s.service.UserExists(ctx, ctx.Param("name"))
+	svcCtx := tracing.Add(ctx, ctx.Param("name")+":"+strconv.Itoa(rand.Intn(100)))
+
+	ok, err := s.service.UserExists(svcCtx, ctx.Param("name"))
 	if err != nil {
 		ctx.AbortWithError(http.StatusInternalServerError, err)
 		return
