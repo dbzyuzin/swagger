@@ -13,6 +13,7 @@ import (
 	"github.com/dbzyuzin/swagger/internal/repostories/memory"
 	"github.com/dbzyuzin/swagger/internal/services"
 	"github.com/dbzyuzin/swagger/internal/transport/rest"
+	"github.com/dbzyuzin/swagger/internal/worker"
 	"go.uber.org/zap"
 )
 
@@ -33,7 +34,11 @@ func main() {
 	repo := &memory.Repository{}
 	service := services.New(repo)
 
+	worker := worker.New(&service, time.Second)
 	server := rest.NewServer(lg, cfg.Server, service)
+
+	workerCtx, workerCancel := context.WithCancel(context.Background())
+	defer workerCancel()
 
 	go func() {
 		quit := make(chan os.Signal, 1)
@@ -41,10 +46,13 @@ func main() {
 		<-quit
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 		defer cancel()
+		defer workerCancel()
 		if err := server.Shutdown(ctx); err != nil {
 			lg.Panicln("Shutdown error:", err)
 		}
 	}()
+
+	worker.RunNotify(workerCtx)
 
 	if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		lg.Panicln(err)

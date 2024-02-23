@@ -34,3 +34,8 @@ func (s *Service) UserExists(ctx context.Context, name string) (bool, error) {
 	ok := s.repo.FindUser(ctx, name)
 	return ok, nil
 }
+
+func (s *Service) NotifyTodayWather(context.Context) error {
+	fmt.Println("NOTIFY")
+	return nil
+}
